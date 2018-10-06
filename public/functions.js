@@ -112,7 +112,8 @@ function newEvent() {
 function newTicket() {
   let ticket = {
     name: null,
-    value: null
+    value: null,
+    quantity: null
   };
   return ticket;
 }

@@ -134,6 +134,7 @@
         let ticket = newTicket();
         ticket.name = form.name.value;
         ticket.value = form.price.value;
+        ticket.quantity = form.quantity.value;
         let tickets = event.prices.values;
         tickets.push(ticket);
         event.prices.values = tickets;
@@ -291,16 +292,33 @@
       }
 
       function showTickets() {
-        let p = getItem('tickets');
+        let tickets_box = getItem('tickets');
         let tickets = event.prices.values;
-        let i = 0;
-        let res = "";
+        let i, content = "";
+        let res;
         for (i = 0; i < tickets.length; i++) {
-          res = res + "name: " + tickets[i].name + ", price: " + tickets[i].value
-            + "\n";
+          res = tickets[i].name + " " + tickets[i].quantity + " " +
+            tickets[i].value;
+          content = content + "<p id='event_details_form_category_selection'>"
+            + res + "</p>" + "<button id='event_details_form_category_button' "
+            + "onclick='deleteTicket(" + i + ")'>delete</button>" + "</div><br>";
         }
-        p.innerHTML = res;
+        tickets_box.innerHTML = content;
       }
+
+      function deleteTicket(ticketId) {
+        let tickets_values_after = [];
+        let tickets_values_before = event.prices.values;
+        let i;
+        for (i = 0; i < tickets_values_before.length; i++) {
+          if (i !== ticketId) {
+            tickets_values_after.push(tickets_values_before[i]);
+          }
+        }
+        event.prices.values = tickets_values_after;
+        showTickets();
+      }
+
 
     </script>
     <div id="header">
@@ -319,13 +337,8 @@
       <p id="company_name">... Ltd</p>
     </nav>
 
-    <h1>Hello</h1>
-    <a onclick="signOutUser()">log out</a>
-    <button onclick="addCustomer()">createCustomer</button>
-    <button onclick="chargingCustomer()">chargeCustomer</button>
-
     <p id="result_of_button"></p>
-
+    <br><br>
     <div id="forms">
       <div id="forms_status_box">
         <div id="forms_status_1" class="forms_status_item">
@@ -420,6 +433,8 @@
         <div id="event_details_form_link_box">
         </div>
         <br><br>
+        <br>
+        <br>
         <input id="addEvent_button" type="button"
           onclick="next('event_details_form')" value="NEXT">
         <br>
@@ -427,16 +442,42 @@
       </form>
 
       <form id="ticketing_form">
-        <p id="tickets"></p>
-        <div>
+        <div id="tickets"></div>
+        <div id="ticketing_form_box">
           <br>
-          <input class="form_input" type="text" name="name" value="Name">
+          <input class="form_input" type="text" name="name" value="Ticket Name">
+          <br>
+          <br>Quantity
+          <input class="form_input" type="number" name="quantity" min="1">
           <br>
           <br>
           <input class="form_input" type="text" name="price" value="Price">
           <br>
-          <input type="button" onclick="addTicket()" value="add ticket">
+          <br>
+          <div id="ticketing_form_add_ticket" onclick="addTicket()">
+            + Add Ticket</div>
         </div>
+        <br><br>
+        <label class="container">
+          <input type="radio" name="age_restrictions"
+            value="all_ages">
+          <span class="checkmark">
+            <p>Require Guest Name & Phone</p>
+          </span>
+        </label>
+        <label class="container">
+          <input type="radio" name="age_restrictions" value="over_18s">
+          <span class="checkmark">
+            <p>Purchase Confirmation</p>
+          </span>
+        </label>
+        <label class="container">
+          <input type="radio" name="age_restrictions" value="over_18s">
+          <span class="checkmark">
+            <p>Terms and Conditions</p>
+          </span>
+        </label>
+        <br><br>
         <br>
         <br>
         <input id="addEvent_button" type="button"
@@ -453,7 +494,15 @@
         <input class="form_input" type="text" name="address" value="Address">
         <br>
         <br>
+        <input class="form_input" type="text" name="city" value="City">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="email" value="Email">
+        <br>
+        <br>
         <input class="form_input" type="text" name="phone" value="Phone">
+        <br>
+        <br>
         <br>
         <br>
         <input id="addEvent_button" type="button"
@@ -476,6 +525,8 @@
           value="Account Number">
         <br>
         <br>
+        <br>
+        <br>
         <input id="addEvent_button" type="button"
           onclick="next('bank_details_form')" value="SUBMIT">
         <br>
@@ -483,12 +534,6 @@
       </form>
 
     </div>
-
-    <button onclick="showEvent()">Show event</button>
-    <button onclick="authentication_status()">Authentication Status</button>
-    <button onclick="addingEvent()">Add Event</button>
-    <button onclick="addCurrentEvent()">Add current Event</button>
-    <button onclick="checkUserIsSignedIn()">checkUserIsSignedIn</button>
     <script>
       deactivateFormStatus(1);
       deactivateFormStatus(2);
@@ -499,6 +544,15 @@
       collapse("host_details_form");
       collapse("bank_details_form");
     </script>
+    <h1>Hello</h1>
+    <a onclick="signOutUser()">log out</a>
+    <button onclick="addCustomer()">createCustomer</button>
+    <button onclick="chargingCustomer()">chargeCustomer</button>
+    <button onclick="showEvent()">Show event</button>
+    <button onclick="authentication_status()">Authentication Status</button>
+    <button onclick="addingEvent()">Add Event</button>
+    <button onclick="addCurrentEvent()">Add current Event</button>
+    <button onclick="checkUserIsSignedIn()">checkUserIsSignedIn</button>
     <form id="event_details_form_add_photo1">
       <input type="file" name="picture" accept="image/*">
     </form>
