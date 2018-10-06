@@ -1,0 +1,40 @@
+[debug] [2018-10-04T17:59:10.174Z] ----------------------------------------------------------------------
+[debug] [2018-10-04T17:59:10.184Z] Command:       /home/amir/.nvm/versions/node/v6.11.0/bin/node /home/amir/.nvm/versions/node/v6.11.0/bin/firebase serve
+[debug] [2018-10-04T17:59:10.186Z] CLI Version:   4.2.1
+[debug] [2018-10-04T17:59:10.186Z] Platform:      linux
+[debug] [2018-10-04T17:59:10.186Z] Node Version:  v6.11.0
+[debug] [2018-10-04T17:59:10.186Z] Time:          Thu Oct 04 2018 18:59:10 GMT+0100 (BST)
+[debug] [2018-10-04T17:59:10.187Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-10-04T17:59:10.308Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-10-04T17:59:10.309Z] > authorizing via signed-in user
+[debug] [2018-10-04T17:59:10.318Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-10-04T17:59:10.319Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+
+[debug] [2018-10-04T17:59:10.640Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-04T17:59:10.691Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/letsdayout-9783f  
+ 
+[debug] [2018-10-04T17:59:11.455Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-04T17:59:11.459Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/letsdayout-9783f  
+ 
+[debug] [2018-10-04T17:59:12.288Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/home/amir/Web_proj/ldo_web_2'...
+[info] 
+[info] i  functions: Preparing to emulate functions.
+[debug] [2018-10-04T17:59:18.237Z] Fetching environment
+[debug] [2018-10-04T17:59:18.243Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/438112567124:getServerAppConfig  
+ 
+[debug] [2018-10-04T17:59:18.245Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/438112567124/clients/_:getWebAppConfig  
+ 
+[debug] [2018-10-04T17:59:18.531Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-04T17:59:18.532Z] Starting @google-cloud/functions-emulator
+[debug] [2018-10-04T17:59:18.732Z] <<< HTTP RESPONSE 200
+[info] i  hosting[letsdayout-9783f]: Serving hosting files from: public
+[info] ✔  hosting[letsdayout-9783f]: Local server: http://localhost:5000
+[warn] ⚠  functions: Error from emulator. Error: Emulator crashed! Check the log file...
+[debug] [2018-10-04T17:59:18.907Z] Error: Emulator crashed! Check the log file...
+    at ChildProcess.child.on (/home/amir/.nvm/versions/node/v6.11.0/lib/node_modules/firebase-tools/node_modules/@google-cloud/functions-emulator/src/cli/controller.js:650:24)
+    at emitTwo (events.js:106:13)
+    at ChildProcess.emit (events.js:191:7)
+    at Process.ChildProcess._handle.onexit (internal/child_process.js:215:12)

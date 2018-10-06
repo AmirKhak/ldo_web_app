@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-functions.js"></script>
+    <script type="text/javascript" src="./functions.js"></script>
+    <link rel="stylesheet" type="text/css" href="./stylesheet.css">
+    <script>
+      initializeFirebase();
+      initializeFirebaseFunctions();
+      var getUserEvent;
+      function initializeFirebaseFunctions() {
+        var functions = firebase.functions();
+        getUserEvent = firebase.functions().httpsCallable('getUserEvent');
+      }
+      setTimeout(function() {
+        checkUserIsSignedIn();
+      }, 2000);
+    </script>
+  </head>
+  <body>
+    <script>
+      var events = null;
+      function getEvents() {
+        getUserEvent().then(function(result) {
+          events = result.data;
+        }).catch(function(error) {
+          topText(error.message);
+        });
+      }
+
+      function addEvent() {
+        let content = getItem("add_event_box").innerHTML;
+        //getItem("res_box").innerHTML = content + "<button>Gen Add Button</button>";
+      }
+    </script>
+    <div id="header">
+      <img id="letsdayout_img_header" src="letsdayout.png">
+      <nav id="header_nav">
+        <a id="header_nav_item" href="/home">home</a>
+        <a id="header_nav_item" href="/account">account</a>
+        <a id="logout_button" onclick="signOutUser()">logout</a>
+      </nav>
+    </div>
+    <nav id="home_nav">
+      <div id="home_nav_items">
+        <a id="home_nav_item_active" href="/home">Event</a>
+        <a id="home_nav_item" href="/attendees">Attendees</a>
+      </div>
+      <p id="company_name">... Ltd</p>
+    </nav>
+    <div id="add_event_box">
+      <br>
+      <br>
+      <h6>If you want to create new events to your
+      Letsdayout App account, please click below</h6>
+      <br>
+      <button id="addEvent_button" onclick="redirectToPath('/new_event')">
+        ADD NEW EVENT</button>
+      <br>
+    </div>
+    <div id="events_box">
+      <h5 id="events_box_header">EVENTS</h5>
+      <p id="events_box_result"></p>
+      <div id="event_box">
+        <div id="event_image_box">
+
+        </div>
+      </div>
+    </div>
+    <div id="res_box"></div>
+    <button onclick="addButton()">Add Button</button>
+    <h1>Hello</h1>
+    <a onclick="signOutUser()">log out</a>
+    <button onclick="addCustomer()">createCustomer</button>
+    <button onclick="chargingCustomer()">chargeCustomer</button>
+
+    <p id="result_of_button"></p>
+
+    <button onclick="showEvent()">Show event</button>
+    <button onclick="authentication_status()">Authentication Status</button>
+    <button onclick="addingEvent()">Add Event</button>
+    <button onclick="addCurrentEvent()">Add current Event</button>
+    <button onclick="checkUserIsSignedIn()">checkUserIsSignedIn</button>
+  </body>
+</html>

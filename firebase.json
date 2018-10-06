@@ -1,0 +1,32 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [{
+      "source": "/",
+      "destination": "/index.html"
+    }, {
+      "source": "/sign_up",
+      "destination": "/sign_up.html"
+    }, {
+      "source": "/home",
+      "destination": "/home.html"
+    }, {
+      "source": "/new_event",
+      "destination": "/new_event.html"
+    }]
+  },
+  "functions": {
+    "predeploy": [
+      "npm --prefix \"$RESOURCE_DIR\" run lint"
+    ],
+    "source": "functions"
+  },
+  "database": {
+    "rules": "database.rules.json"
+  }
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Firebase Hosting</title>
+
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-auth.js"></script>
+    <script type="text/javascript" src="./functions.js"></script>
+    <link rel="stylesheet" type="text/css" href="./stylesheet.css">
+    <script>
+      initializeFirebase();
+      checkUserIsNotSignedIn();
+    </script>
+
+  </head>
+  <body>
+
+    <script>
+      function signInUser() {
+        let form = document.getElementById('sign_in_form');
+        firebase.auth().signInWithEmailAndPassword(form.email.value,
+          form.password.value).then(function(auth) {
+            redirectToPath('/home');
+        })
+        .catch(function(error) {
+          let errorMessage = error.message;
+          topText(errorMessage);
+        });
+      }
+      function toPrint() {
+        topText(isUserAuthenticated());
+      }
+    </script>
+    <div id="index_left_side">
+      <img id="index_left_side_img" src="letsdayout.png">
+      <p id="index_left_side_info">CLIENT WEB SERVICES</p>
+    </div>
+    <div id="index_right_side">
+      <h1>Sign In</h1>
+      <p id="result_of_button"></p>
+      <form id="sign_in_form">
+        <br>
+        <input class="form_input" type="text" name="email" value="EMAIL">
+        <br>
+        <br>
+        <input class="form_input" type="password" name="password" value="PASSWORD">
+        <br>
+        <br>
+        <input id="sign_in_button" type="submit" value="SIGN IN">
+        <br>
+        <br>
+        <a id="sign_in_form_link" href="/sign_up">Add An Account</a>
+      </form>
+      <button onclick="signInUser()">Sign In</button>
+      <button onclick="authentication_status()">Authentication Status</button>
+      <button onclick="signOutUser()">Sign Out</button>
+      <button onclick="toPrint()">isUserAuthenticated</button>
+    </div>
+  </body>
+</html>

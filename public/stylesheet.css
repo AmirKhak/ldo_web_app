@@ -1,0 +1,383 @@
+#header {
+  width: 100%;
+  height: 20%;
+  min-height: 100px;
+  background-color: #272424;
+}
+
+#letsdayout_img_header {
+  width: 125px;
+  height: 40px;
+  margin-left: 20px;
+  margin-top: 25px;
+}
+
+body {
+  margin: 0;
+}
+
+#header_nav_item {
+  width: -moz-fit-content;
+  height: 25px;
+  color: white;
+  text-decoration: none;
+  overflow: hidden;
+  display: inline-block;
+  text-align: center;
+  font-size: 1em;
+  padding-right: 15px;
+}
+
+#header_nav {
+  float: right;
+  margin-top: 50px;
+}
+
+#logout_button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  height: 25px;
+  width: -moz-fit-content;
+  padding-right: 15px;
+  font-size: 1em;
+  text-align: center;
+  display: inline-block;
+  float: right;
+}
+
+#logout_button:hover {
+  background-color: grey;
+}
+
+#home_nav_item {
+  text-decoration: none;
+  height: 35px;
+  padding-top: 15px;
+  width: -moz-fit-content;
+  color: #3c3232;
+  display: inline-block;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+#home_nav_item_active {
+  text-decoration: none;
+  height: 35px;
+  padding-top: 15px;
+  width: -moz-fit-content;
+  color: #D20EB8;
+  display: inline-block;
+  padding-right: 15px;
+  padding-left: 15px;
+  border-bottom: 1px solid #3c3232;
+}
+
+#home_nav_item:hover {
+  color: white;
+}
+
+#home_nav {
+  display: block;
+  width: 100%;
+  height: 50px;
+  text-align: center;
+  background-color: #f4f4f4;
+}
+
+#home_nav_items {
+  position: absolute;
+  display: inline-block;
+}
+
+#company_name {
+  height: 35px;
+  padding-top: 15px;
+  width: 100px;
+  color: #a4a4a4;
+  display: inline-block;
+  margin: 0;
+  float: right;
+}
+
+#addEvent_button {
+  background-image: linear-gradient(to right, #FF857D, #D20EB8);
+  border-radius: 35px;
+  border: none;
+  height: 50px;
+  width: 400px;
+  color: white;
+}
+
+#add_event_box {
+  width: 100%;
+  height: -moz-fit-content;
+  text-align: center;
+}
+
+#events_box {
+  height: -moz-fit-content;
+  color: #a4a4a4;
+  padding: 20px 50px;
+  overflow: hidden;
+  /* background-color: yellow; */
+}
+
+#event_box {
+  display: inline-block;
+  width: -moz-fit-content;
+  height: -moz-fit-content;
+}
+
+#event_image_box {
+  background-color: #a4a4a4;
+  width: 250px;
+  height: 125px;
+  border-radius: 10px;
+}
+
+#forms {
+  width: 100%;
+  height: -moz-fit-content;
+  min-height: 200px;
+  text-align: center;
+}
+
+#forms_status_box {
+  width: 100%;
+  height: 100px;
+  display: block;
+  text-align: center;
+}
+
+.forms_status_item {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  margin-right: 25px;
+}
+
+.forms_status_header {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #272424;
+  border-radius: 25px;
+  display: inline-block;
+}
+
+.form_input {
+  border-bottom: 1px solid #a4a4a4;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  color: black;
+}
+
+#event_details_top_input {
+  height: 20px;
+  overflow: hidden;
+  width: 100%;
+  text-align: center;
+}
+
+/* The container */
+.container {
+    display: inline-block;
+    position: relative;
+    padding-left: 85px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: medium;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: grey;
+    padding-right: 85px;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: white;
+    border-radius: 50%;
+    border: 1px solid grey;
+}
+
+.checkmark p {
+  display: inline;
+  margin-left: 20px;
+  height: 20px;
+  overflow: hidden;
+  width: 120px;
+  position: inherit;
+  margin-top: 5px;
+  text-align: left;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+	border-radius: 50%;
+    color: black;
+	background: linear-gradient(to right, #FF857D, #D20EB8);
+}
+
+#index_left_side {
+  width: 50%;
+  height: 780px;
+  background-image: url('index.png');
+  display: block;
+  float: left;
+}
+
+#index_right_side {
+  display: block;
+  float: right;
+  width: 50%;
+  text-align: center;
+}
+
+#index_left_side_img {
+  width: 80%;
+  height: 10%;
+  margin-top: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  display: inherit;
+}
+
+#index_left_side_info {
+  color: white;
+  margin-left: auto;
+  display: block;
+  margin-right: auto;
+  width: -moz-fit-content;
+}
+
+#sign_in_form_link {
+  color: black;
+  text-decoration: none;
+}
+
+#sign_in_button {
+  background-image: linear-gradient(to right, #FF857D, #D20EB8);
+  border-radius: 30px;
+  border: none;
+  height: 40px;
+  width: 100px;
+  color: white;
+}
+
+#event_detail_description {
+  height: 100px;
+  width: 300px;
+}
+
+#event_details_form_add_photo {
+  margin-right: 15px;
+}
+
+#event_details_form_category_select {
+  background-color: transparent;
+  border-bottom: 1px solid black;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  margin-right: 15px;
+}
+
+#event_details_form_category_box_add {
+  margin-right: 15px;
+  border: 1px solid #253856;
+  background-color: transparent;
+  border-radius: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#event_details_form_category_box_close {
+  border: 1px solid #253856;
+  background-color: transparent;
+  border-radius: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#event_details_form_category_box_add:hover {
+  background-color: #253856;
+  color: white;
+}
+
+#event_details_form_category_box_close:hover {
+  background-color: #253856;
+  color: white;
+}
+
+#event_details_form_category_selection {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+#event_details_form_category_button {
+  border: 1px solid #253856;
+  background-color: transparent;
+  border-radius: 5px;
+}
+
+#event_details_form_category_button:hover {
+  background-color: #253856;
+  color: white;
+}
+
+#event_details_form_add_category {
+  border: 1px solid #253856;
+  background-color: transparent;
+  border-radius: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  display: inline-block;
+}
+
+#event_details_form_add_category:hover {
+  background-color: #253856;
+  color: white;
+}

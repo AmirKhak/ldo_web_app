@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sign Up</title>
+  </head>
+  <body>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-functions.js"></script>
+    <script type="text/javascript" src="./functions.js"></script>
+    <link rel="stylesheet" type="text/css" href="./stylesheet.css">
+    <script>
+      initializeFirebase();
+      initializeFirebaseFunctions();
+      var addAccount;
+      function initializeFirebaseFunctions() {
+        var functions = firebase.functions();
+        addAccount = firebase.functions().httpsCallable('addAccount');
+      }
+      checkUserIsNotSignedIn();
+    </script>
+    <script>
+
+      function sign_up() {
+        let form = document.getElementById("sign_up_form");
+        let account = newAccount();
+        account.name = form.name.value;
+        firebase.auth().createUserWithEmailAndPassword(form.email.value, form.password.value)
+        .then(function(auth) {
+          addingAccount(account);
+        })
+        .catch(function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          topText(errorMessage);
+        });
+      }
+
+      function addingAccount(account) {
+        addAccount(account).then(function(result) {
+          topText("SUCCESS");
+          redirectToPath('/home');
+        }).catch(function(error) {
+          topText(error.message);
+        });
+      }
+
+    </script>
+    <div id="index_left_side">
+      <img id="index_left_side_img" src="letsdayout.png">
+      <p id="index_left_side_info">CLIENT WEB SERVICES</p>
+    </div>
+    <div id="index_right_side">
+      <h1>Sign Up</h1>
+
+      <form id="sign_up_form">
+        <br>
+        <input class="form_input" type="text" name="name" value="NAME">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="email" value="EMAIL">
+        <br>
+        <br>
+        <input class="form_input" type="password" name="password" value="PASSWORD">
+        <br>
+        <br>
+        <input id="sign_in_button" type="submit" value="SIGN IN" onclick="sign_up()">
+        <br>
+        <br>
+      </form>
+      <button onclick="sign_up()">Create</button>
+      <p id="result_of_button"></p>
+      <button onclick="authentication_status()">Authentication Status</button>
+    </div>
+  </body>
+</html>
