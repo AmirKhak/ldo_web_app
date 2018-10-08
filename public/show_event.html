@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-functions.js"></script>
+
+    <script type="text/javascript" src="./functions.js"></script>
+    <link rel="stylesheet" type="text/css" href="./stylesheet.css">
+
+    <script>
+      initializeFirebase();
+      initializeFirebaseFunctions();
+      var addEvent;
+      var createCustomer;
+      var chargeCustomer;
+      function initializeFirebaseFunctions() {
+        var functions = firebase.functions();
+        addEvent = firebase.functions().httpsCallable('addEvent');
+        createCustomer = firebase.functions().httpsCallable('createCustomer');
+        chargeCustomer = firebase.functions().httpsCallable('chargeCustomer');
+      }
+      setTimeout(function() {
+        checkUserIsSignedIn();
+      }, 2000);
+    </script>
+  </head>
+  <body>
+    <script>
+
+      let event = newEvent();
+
+      let form = document.getElementById("event_details_form");
+      //form.style = "display: none;"
+
+      function addCustomer() {
+        let data = {
+          description: "Haya",
+          email: "asad@gm.com"
+        };
+        createCustomer(data).then(function(res) {
+          topText(JSON.stringify(res));
+        }).catch(function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          topText(errorMessage);
+        });
+      }
+
+      function chargingCustomer() {
+        let data = {
+          amount: 100,
+          currency: "gbp",
+          description: "amiri",
+          customer: "cus_De9KR5P3tKYByj",
+          source: "tok_mastercard",
+          commision: 0.15,
+          account: "acct_1DC1DnAO8SEDLVhV",
+          receipt_email: "asad@gm.com"
+        };
+        chargeCustomer(data).then(function(res) {
+          topText(JSON.stringify(res));
+        }).catch(function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          topText(errorMessage);
+        });
+      }
+
+      function next(id) {
+        switch (id) {
+          case "event_details_form":
+            addEventDetails();
+            activateFormStatus(2);
+            expand("ticketing_form");
+            break;
+          case "ticketing_form":
+            addTicketing();
+            activateFormStatus(3);
+            expand("host_details_form")
+            break;
+          case "host_details_form":
+            addHost();
+            activateFormStatus(4);
+            expand("bank_details_form");
+            break;
+          case "bank_details_form":
+            addBankDetails();
+            showEvent();
+            addCurrentEvent();
+            break;
+        }
+        collapse(id);
+      }
+
+      function addCurrentEvent() {
+        addEvent(event).then(function(result) {
+          topText("SUCCESS");
+        }).catch(function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          topText(errorMessage);
+        });
+      }
+
+      function addEventDetails() {
+        let form = getItem("event_details_form");
+        event.description = form.description.value;
+        event.location.address = form.location.value;
+        event.title = form.name.value;
+        let dates = event.dates.values;
+        dates.push(form.dates.value);
+        event.dates.values = dates;
+      }
+
+      function addTicketing() {
+        let form = getItem("ticketing_form");
+      }
+
+      function addHost() {
+        let form = getItem("host_details_form");
+        event.host.name = form.name.value;
+        event.host.address = form.address.value;
+        event.host.phone = form.phone.value;
+        event.host.web = form.email.value;
+        event.host.city = form.city.value;
+      }
+
+      function addBankDetails() {
+        let form = getItem("bank_details_form");
+        event.bank_details.holder_name = form.holder_name.value;
+        event.bank_details.sort_code = form.sort_code.value;
+        event.bank_details.account_number = form.account_number.value;
+      }
+
+      function addTicket() {
+        let form = getItem("ticketing_form");
+        let ticket = newTicket();
+        ticket.name = form.name.value;
+        ticket.value = form.price.value;
+        ticket.quantity = form.quantity.value;
+        let tickets = event.prices.values;
+        tickets.push(ticket);
+        event.prices.values = tickets;
+        showTickets();
+      }
+
+      function addPhoto() {
+        let user = getCurrentUser();
+        if (user === null) {
+          return;
+        }
+        let file = getItem("event_details_form")
+          .picture.files[0];
+        let imagesPath = 'experiencesUAT/' + user.uid + "/"
+          + file.name;
+        let imagesRef = storageRef.child(imagesPath);
+        imagesRef.put(file).then(function(snapshot) {
+          topText("Photo Added!");
+        });
+        storageRef.child(imagesPath).getDownloadURL().then(function(url) {
+          let images = event.images.values;
+          images.push(url);
+          event.images.values = images;
+        }).catch(function(error) {
+          topText(error.message);
+        });
+      }
+
+      function addCategory() {
+        let category_value = getItem("event_details_form_category_select").value;
+        let categories = event.category.values;
+        categories.push(category_value);
+        event.category.values = categories;
+        showCategories();
+      }
+
+      function showCategories() {
+        let content = "<br>";
+        let i;
+        let categories = event.category.values;
+        for (i = 0; i < categories.length; i++) {
+          content = content + "<div class='event_details_form_category'>" +
+            "<p id='event_details_form_category_selection'>" + categories[i] +
+            "</p>" + "<button id='event_details_form_category_button' " +
+            "onclick='deleteCategory(" + i +
+            ")'>delete</button>" + "</div><br>";
+        }
+        content = content + "<select id='event_details_form_category_select'>" +
+          "<option name='options' value='Recreational'>Recreational</option>" +
+          "<option name='options' value='Educational'>Educational</option>" +
+          "<option name='options' value='Tourism'>Tourism</option>" +
+          "<option name='options' value='Social'>Social</option>" +
+          "<option name='options' value='Sport'>Sport</option>" +
+          "<option name='options' value='Work'>Work</option>" +
+          "<option name='options' value='Business'>Business</option>" +
+          "<option name='options' value='Politics'>Politics</option>" +
+          "<option name='options' value='Cultural'>Cultural</option>" +
+          "<option name='options' value='Environment'>Environment</option>" +
+          "<option name='options' value='Other'>Other</option>" +
+          "</select>" +
+          "<a id='event_details_form_category_box_add' " +
+          "onclick='addCategory()'>+</a>" +
+          "<a id='event_details_form_category_box_close' " +
+          "onclick=collapse('event_details_form_category_box')>" +
+          "close</a>";
+        getItem("event_details_form_category_box").innerHTML = content;
+      }
+
+      function deleteCategory(categoryId) {
+        let category_values_after = [];
+        let category_values_before = event.category.values;
+        let i;
+        for (i = 0; i < category_values_before.length; i++) {
+          if (i !== categoryId) {
+            category_values_after.push(category_values_before[i]);
+          }
+        }
+        event.category.values = category_values_after;
+        showCategories();
+      }
+
+      function expand_category_box() {
+        expand("event_details_form_category_box");
+        showCategories();
+      }
+
+      function addLink() {
+        let link_value = getItem("event_details_form").link.value;
+        let links = event.links.values;
+        links.push(link_value);
+        event.links.values = links;
+        showLinks();
+      }
+
+      function showLinks() {
+        let content = "<br>";
+        let i;
+        let links = event.links.values;
+        for (i = 0; i < links.length; i++) {
+          content = content + "<div>" +
+            "<p id='event_details_form_category_selection'>" + links[i] +
+            "</p>" + "<button id='event_details_form_category_button' " +
+            "onclick='deleteLink(" + i +
+            ")'>delete</button>" + "</div><br>";
+        }
+        content = content +
+          "<input class='form_input' type='text' name='link' value='Link'>" +
+          "<a id='event_details_form_category_box_add' " +
+          "onclick='addLink()'>+</a>" +
+          "<a id='event_details_form_category_box_close' " +
+          "onclick=collapse('event_details_form_link_box')>" +
+          "close</a>";
+        getItem("event_details_form_link_box").innerHTML = content;
+      }
+
+      function deleteLink(linkId) {
+        let link_values_after = [];
+        let link_values_before = event.links.values;
+        let i;
+        for (i = 0; i < link_values_before.length; i++) {
+          if (i !== linkId) {
+            link_values_after.push(link_values_before[i]);
+          }
+        }
+        event.links.values = link_values_after;
+        showLinks();
+      }
+
+      function expand_link_box() {
+        expand("event_details_form_link_box");
+        topText("Here");
+        showLinks();
+      }
+
+      function activateFormStatus(statusId) {
+        styleElementById("forms_status_" + statusId, "color: #272424;");
+        styleElementById("forms_status_" + statusId + "_header",
+          "border: 1px solid #272424;");
+      }
+
+      function deactivateFormStatus(statusId) {
+        styleElementById("forms_status_" + statusId, "color: grey;");
+        styleElementById("forms_status_" + statusId + "_header",
+          "border: 1px solid grey;");
+      }
+
+
+      function addingEvent() {
+        expand("event_details_form");
+        activateFormStatus(1);
+      }
+
+      function showEvent() {
+        topText(JSON.stringify(event));
+      }
+
+      function showTickets() {
+        let tickets_box = getItem('tickets');
+        let tickets = event.prices.values;
+        let i, content = "";
+        let res;
+        for (i = 0; i < tickets.length; i++) {
+          res = tickets[i].name + " " + tickets[i].quantity + " " +
+            tickets[i].value;
+          content = content + "<p id='event_details_form_category_selection'>"
+            + res + "</p>" + "<button id='event_details_form_category_button' "
+            + "onclick='deleteTicket(" + i + ")'>delete</button>" + "</div><br>";
+        }
+        tickets_box.innerHTML = content;
+      }
+
+      function deleteTicket(ticketId) {
+        let tickets_values_after = [];
+        let tickets_values_before = event.prices.values;
+        let i;
+        for (i = 0; i < tickets_values_before.length; i++) {
+          if (i !== ticketId) {
+            tickets_values_after.push(tickets_values_before[i]);
+          }
+        }
+        event.prices.values = tickets_values_after;
+        showTickets();
+      }
+
+
+    </script>
+    <div id="header">
+      <img id="letsdayout_img_header" src="letsdayout.png">
+      <nav id="header_nav">
+        <a id="header_nav_item" href="/home">home</a>
+        <a id="header_nav_item" href="/account">account</a>
+        <a id="logout_button" onclick="signOutUser()">logout</a>
+      </nav>
+    </div>
+    <nav id="home_nav">
+      <div id="home_nav_items">
+        <a id="home_nav_item_active" href="/home">Event</a>
+        <a id="home_nav_item" href="/attendees">Attendees</a>
+      </div>
+      <p id="company_name">... Ltd</p>
+    </nav>
+
+    <p id="result_of_button"></p>
+    <br><br>
+    <div id="forms">
+      <div id="forms_status_box">
+        <div id="forms_status_1" class="forms_status_item">
+          <div id="forms_status_1_header" class="forms_status_header">
+            <p>1</p>
+          </div>
+          <p>Event Detail</p>
+        </div>
+        <div id="forms_status_2" class="forms_status_item">
+          <div id="forms_status_2_header" class="forms_status_header">
+            <p>2</p>
+          </div>
+          <p>Ticketing</p>
+        </div>
+        <div id="forms_status_3" class="forms_status_item">
+          <div id="forms_status_3_header" class="forms_status_header">
+            <p>3</p>
+          </div>
+          <p>Host</p>
+        </div>
+        <div id="forms_status_4" class="forms_status_item">
+          <div id="forms_status_4_header" class="forms_status_header">
+            <p>4</p>
+          </div>
+          <p>Bank Detail</p>
+        </div>
+      </div>
+      <br><br>
+      <form id="event_details_form">
+        <div id="event_details_top_input">
+          <input id="event_details_name_input" class="form_input"
+            type="text" name="name" value="Name*">
+          <input id="event_details_location_input"
+            class="form_input" type="text" name="location" value="Location*">
+          <br>
+        </div>
+        <br><br>
+        <p>You select more than one date.</p>
+        <br>
+        <div>
+          <label class="container">
+            <input type="radio" checked="unchecked" name="date_repetition"
+              value="Weekly">
+            <span class="checkmark">
+              <p>Weekly</p>
+            </span>
+          </label>
+          <label class="container">
+            <input type="radio" name="date_repetition" value="Monthly">
+            <span class="checkmark">
+              <p>Monthly</p>
+            </span>
+          </label>
+        </div>
+        <br><br>
+        <br>Dates:<br>
+        <input class="form_input" type="date" name="dates">
+        <br>
+        <br>
+        <input class="form_input" id="event_detail_description" type="text"
+          name="description" value="Description">
+        <br>
+        <br>
+        <br><br>
+        <label class="container">
+          <input type="radio" checked="checked" name="age_restrictions"
+            value="all_ages">
+          <span class="checkmark">
+            <p>All ages</p>
+          </span>
+        </label>
+        <label class="container">
+          <input type="radio" name="age_restrictions" value="over_18s">
+          <span class="checkmark">
+            <p>Over 18s only</p>
+          </span>
+        </label>
+        <br><br>
+        <br><br>
+        <input id="event_details_form_add_photo" type="file" name="picture"
+          accept="image/*">
+        <div id="event_details_form_add_category" onclick="addPhoto()">
+          Add Photo</div>
+        <br><br>
+        <div id="event_details_form_add_category"
+          onclick="expand_category_box()">Add Category</div>
+        <div id="event_details_form_category_box">
+        </div>
+        <br><br>
+        <div id="event_details_form_add_category"
+          onclick="expand_link_box()">Add Link</div>
+        <div id="event_details_form_link_box">
+        </div>
+        <br><br>
+        <br>
+        <br>
+        <input id="addEvent_button" type="button"
+          onclick="next('event_details_form')" value="NEXT">
+        <br>
+        <br>
+      </form>
+
+      <form id="ticketing_form">
+        <div id="tickets"></div>
+        <div id="ticketing_form_box">
+          <br>
+          <input class="form_input" type="text" name="name" value="Ticket Name">
+          <br>
+          <br>Quantity
+          <input class="form_input" type="number" name="quantity" min="1">
+          <br>
+          <br>
+          <input class="form_input" type="text" name="price" value="Price">
+          <br>
+          <br>
+          <div id="ticketing_form_add_ticket" onclick="addTicket()">
+            + Add Ticket</div>
+        </div>
+        <br><br>
+        <label class="container">
+          <input type="radio" name="age_restrictions"
+            value="all_ages">
+          <span class="checkmark">
+            <p>Require Guest Name & Phone</p>
+          </span>
+        </label>
+        <label class="container">
+          <input type="radio" name="age_restrictions" value="over_18s">
+          <span class="checkmark">
+            <p>Purchase Confirmation</p>
+          </span>
+        </label>
+        <label class="container">
+          <input type="radio" name="age_restrictions" value="over_18s">
+          <span class="checkmark">
+            <p>Terms and Conditions</p>
+          </span>
+        </label>
+        <br><br>
+        <br>
+        <br>
+        <input id="addEvent_button" type="button"
+          onclick="next('ticketing_form')" value="NEXT">
+        <br>
+        <br>
+      </form>
+
+      <form id="host_details_form">
+        <br>
+        <input class="form_input" type="text" name="name" value="Name">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="address" value="Address">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="city" value="City">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="email" value="Email">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="phone" value="Phone">
+        <br>
+        <br>
+        <br>
+        <br>
+        <input id="addEvent_button" type="button"
+          onclick="next('host_details_form')" value="NEXT">
+        <br>
+        <br>
+      </form>
+
+      <form id="bank_details_form">
+        <br>
+        <input class="form_input" type="text" name="holder_name"
+          value="Holder Name">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="sort_code"
+          value="Sort Code">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="account_number"
+          value="Account Number">
+        <br>
+        <br>
+        <br>
+        <br>
+        <input id="addEvent_button" type="button"
+          onclick="next('bank_details_form')" value="SUBMIT">
+        <br>
+        <br>
+      </form>
+
+    </div>
+    <script>
+      deactivateFormStatus(1);
+      deactivateFormStatus(2);
+      deactivateFormStatus(3);
+      deactivateFormStatus(4);
+      collapse("event_details_form");
+      collapse("ticketing_form");
+      collapse("host_details_form");
+      collapse("bank_details_form");
+    </script>
+    <h1>Hello</h1>
+    <a onclick="signOutUser()">log out</a>
+    <button onclick="addCustomer()">createCustomer</button>
+    <button onclick="chargingCustomer()">chargeCustomer</button>
+    <button onclick="showEvent()">Show event</button>
+    <button onclick="authentication_status()">Authentication Status</button>
+    <button onclick="addingEvent()">Add Event</button>
+    <button onclick="addCurrentEvent()">Add current Event</button>
+    <button onclick="checkUserIsSignedIn()">checkUserIsSignedIn</button>
+    <form id="event_details_form_add_photo1">
+      <input type="file" name="picture" accept="image/*">
+    </form>
+    <button onclick="deactivateFormStatus(2)">Submit</button>
+    <br>
+    <br>
+  </body>
+</html>

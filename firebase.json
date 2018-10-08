@@ -18,6 +18,9 @@
     }, {
       "source": "/new_event",
       "destination": "/new_event.html"
+    }, {
+      "source": "/account",
+      "destination": "/account.html"
     }]
   },
   "functions": {

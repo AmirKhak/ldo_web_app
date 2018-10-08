@@ -79,7 +79,8 @@ function newEvent() {
       name: null,
       phone: null,
       postcode: null,
-      web: null,
+      city: null,
+      web: null
     },
     hostid: null,
     images: {
@@ -131,6 +132,19 @@ function newAccount() {
       followers: []
     },
     userId: null,
+    host: {
+      address: null,
+      name: null,
+      phone: null,
+      postcode: null,
+      city: null,
+      web: null
+    },
+    bank_details: {
+      holder_name: null,
+      sort_code: null,
+      account_number: null
+    },
     work: {
       company: null,
       job: null
@@ -143,6 +157,11 @@ function getItem(documentId) {
   return document.getElementById(documentId);
 }
 
+function getItems(className) {
+  return document.getElementsByClassName(className);
+}
+
+
 function collapse(documentId) {
   styleElementById(documentId, "display: none");
 }
@@ -153,4 +172,21 @@ function expand(documentId) {
 
 function styleElementById(documentId, css_style) {
   getItem(documentId).style = css_style;
+}
+
+function styleElementsByClassName(className, css_style) {
+  let i, items = getItems(className);
+  for(i = 0; i < items.length; i++) {
+    items[i].style = css_style;
+  }
+}
+
+function getPagePathName() {
+  return window.location.pathname;
+}
+
+function getPageParamID() {
+  let path_name = getPagePathName();
+  let paramStartPostion = path_name.lastIndexOf("/") + 1;
+  topText(path_name.slice(paramStartPostion, path_name.length));
 }

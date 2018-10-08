@@ -9,12 +9,12 @@
     <script>
       initializeFirebase();
       initializeFirebaseFunctions();
-      var addEvent;
-      var getUserEvent;
+      var getUserAccount;
+      var updateAccount;
       function initializeFirebaseFunctions() {
         var functions = firebase.functions();
-        addEvent = firebase.functions().httpsCallable('addEvent');
-        getUserEvent = firebase.functions().httpsCallable('getUserEvent');
+        getUserAccount = firebase.functions().httpsCallable('getUserAccount');
+        updateAccount = firebase.functions().httpsCallable('updateAccount');
       }
       setTimeout(function() {
         checkUserIsSignedIn();
@@ -23,19 +23,85 @@
   </head>
   <body>
     <script>
-      var events = null;
-      function getEvents() {
-        getUserEvent().then(function(result) {
-          events = result.data;
+      var account;
+      getAccount();
+      function getAccount() {
+        getUserAccount().then(function(result) {
+          account = JSON.parse(result.data.account);
+          topText('ready' + result.data.account);
+          expandProfile();
         }).catch(function(error) {
           topText(error.message);
         });
       }
 
-      function addButton() {
-        let content = getItem("res_box").innerHTML
-        getItem("res_box").innerHTML = content + "<button>Gen Add Button</button>";
+      function setHost() {
+        let form = getItem("host_details_form");
+        if (!account.host) {
+          return;
+        }
+        form.name.value = account.host.name;
+        form.address.value = account.host.address;
+        form.phone.value = account.host.phone;
+        form.email.value = account.host.web;
+        form.city.value = account.host.city;
       }
+
+      function setBankDetails() {
+        let form = getItem("bank_details_form");
+        if (!account.bank_details) {
+          return;
+        }
+        form.holder_name.value = account.bank_details.holder_name;
+        form.sort_code.value = account.bank_details.sort_code;
+        form.account_number.value = account.bank_details.account_number;
+      }
+
+      function addHost() {
+        let form = getItem("host_details_form");
+        account.host.name = form.name.value;
+        account.host.address = form.address.value;
+        account.host.phone = form.phone.value;
+        account.host.web = form.email.value;
+        account.host.city = form.city.value;
+      }
+
+      function addBankDetails() {
+        let form = getItem("bank_details_form");
+        account.bank_details.holder_name = form.holder_name.value;
+        account.bank_details.sort_code = form.sort_code.value;
+        account.bank_details.account_number = form.account_number.value;
+      }
+
+      function expandBankDetails() {
+        expand('bank_details_form');
+        collapse('host_details_form');
+        setBankDetails();
+      }
+
+      function expandProfile() {
+        collapse('bank_details_form');
+        expand('host_details_form');
+        setHost();
+      }
+
+      function save_form(documentId) {
+        switch (documentId) {
+          case 'bank_details_form':
+            addBankDetails();
+            break;
+          case 'host_details_form':
+            addHost();
+            break;
+        }
+        topText(JSON.stringify(account));
+        updateAccount(account).then(function(result) {
+          topText('SUCCESS');
+        }).catch(function(error) {
+          topText(error.message);
+        });
+      }
+
     </script>
     <div id="header">
       <img id="letsdayout_img_header" src="letsdayout.png">
@@ -47,42 +113,75 @@
     </div>
     <nav id="home_nav">
       <div id="home_nav_items">
-        <a id="home_nav_item" href="/home">Event Manage</a>
-        <a id="home_nav_item" href="/attendees">Attendees</a>
+        <a id="home_nav_item" onclick="expandProfile()">Profile</a>
+        <a id="home_nav_item" onclick="expandBankDetails()">Bank Details</a>
       </div>
       <p id="company_name">... Ltd</p>
     </nav>
-    <div id="add_event_box">
-      <br>
-      <br>
-      <h6>If you want to create new events to your
-      Letsdayout App account, please click below</h6>
-      <br>
-      <button id="addEvent_button">ADD NEW EVENT</button>
-      <br>
+    <p id="result_of_button"></p>
+    <div id='forms'>
+      <form id="host_details_form">
+        <br>
+        <input class="form_input" type="text" name="name" value="Name">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="address" value="Address">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="city" value="City">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="email" value="Email">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="phone" value="Phone">
+        <br>
+        <br>
+        <br>
+        <br>
+        <input id="addEvent_button" type="button"
+          onclick="save_form('host_details_form')" value="SAVE">
+        <br>
+        <br>
+      </form>
+
+      <form id="bank_details_form">
+        <br>
+        <input class="form_input" type="text" name="holder_name"
+          value="Holder Name">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="sort_code"
+          value="Sort Code">
+        <br>
+        <br>
+        <input class="form_input" type="text" name="account_number"
+          value="Account Number">
+        <br>
+        <br>
+        <br>
+        <br>
+        <input id="addEvent_button" type="button"
+          onclick="save_form('bank_details_form')" value="SAVE">
+        <br>
+        <br>
+      </form>
     </div>
-    <div id="events_box">
-      <h5 id="events_box_header">EVENTS</h5>
-      <p id="events_box_result"></p>
-      <div id="event_box">
-        <div id="event_image_box">
-          
-        </div>
-      </div>
-    </div>
-    <div id="res_box"></div>
+    <script>
+      expandProfile();
+    </script>
+
+    <!-- <div id="res_box"></div>
     <button onclick="addButton()">Add Button</button>
     <h1>Hello</h1>
     <a onclick="signOutUser()">log out</a>
     <button onclick="addCustomer()">createCustomer</button>
     <button onclick="chargingCustomer()">chargeCustomer</button>
 
-    <p id="result_of_button"></p>
-
     <button onclick="showEvent()">Show event</button>
     <button onclick="authentication_status()">Authentication Status</button>
     <button onclick="addingEvent()">Add Event</button>
     <button onclick="addCurrentEvent()">Add current Event</button>
-    <button onclick="checkUserIsSignedIn()">checkUserIsSignedIn</button>
+    <button onclick="checkUserIsSignedIn()">checkUserIsSignedIn</button> -->
   </body>
 </html>

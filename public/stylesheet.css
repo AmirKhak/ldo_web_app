@@ -125,15 +125,34 @@ body {
 
 #event_box {
   display: inline-block;
-  width: -moz-fit-content;
-  height: -moz-fit-content;
 }
 
-#event_image_box {
+.event_image_box {
   background-color: #a4a4a4;
   width: 250px;
   height: 125px;
   border-radius: 10px;
+  display: inline-block;
+  margin: 10px;
+}
+
+.event_box_title {
+  font-size: 1.5em;
+  margin-left: 10px;
+}
+
+.event_box_category {
+  float: right;
+  margin-right: 10px;
+}
+
+.event_image_box_link {
+  text-decoration: none;
+  color: white;
+}
+
+.event_box_date {
+  margin-left: 10px;
 }
 
 #forms {

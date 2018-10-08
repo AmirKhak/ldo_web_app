@@ -88,7 +88,7 @@
             break;
           case "bank_details_form":
             addBankDetails();
-            showEvent();
+            //showEvent();
             addCurrentEvent();
             break;
         }
@@ -98,6 +98,7 @@
       function addCurrentEvent() {
         addEvent(event).then(function(result) {
           topText("SUCCESS");
+          redirectToPath('/home');
         }).catch(function(error) {
           var errorCode = error.code;
           var errorMessage = error.message;
@@ -109,6 +110,10 @@
         let form = getItem("event_details_form");
         event.description = form.description.value;
         event.location.address = form.location.value;
+        event.title = form.name.value;
+        let dates = event.dates.values;
+        dates.push(form.dates.value);
+        event.dates.values = dates;
       }
 
       function addTicketing() {
@@ -120,6 +125,8 @@
         event.host.name = form.name.value;
         event.host.address = form.address.value;
         event.host.phone = form.phone.value;
+        event.host.web = form.email.value;
+        event.host.city = form.city.value;
       }
 
       function addBankDetails() {
@@ -395,7 +402,7 @@
         </div>
         <br><br>
         <br>Dates:<br>
-        <input class="form_input" type="date" name="dd">
+        <input class="form_input" type="date" name="dates">
         <br>
         <br>
         <input class="form_input" id="event_detail_description" type="text"
@@ -543,8 +550,9 @@
       collapse("ticketing_form");
       collapse("host_details_form");
       collapse("bank_details_form");
+      addingEvent();
     </script>
-    <h1>Hello</h1>
+    <!-- <h1>Hello</h1>
     <a onclick="signOutUser()">log out</a>
     <button onclick="addCustomer()">createCustomer</button>
     <button onclick="chargingCustomer()">chargeCustomer</button>
@@ -558,6 +566,6 @@
     </form>
     <button onclick="deactivateFormStatus(2)">Submit</button>
     <br>
-    <br>
+    <br> -->
   </body>
 </html>
